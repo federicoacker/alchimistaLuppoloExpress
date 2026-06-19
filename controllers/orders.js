@@ -65,5 +65,67 @@ async function show(request, response) {
     }
 }
 
+async function create(request, response) {
+    const {
+        first_name,
+        last_name,
+        city,
+        address_line_1,
+        postal_code,
+        email,
+        phone,
+        date_of_birth,
+        total_price,
+        shipping_price,
+        products_price,
+        status
+    } = request.body;
 
-export { index, show };
+    const sql = `
+        INSERT INTO orders (
+            first_name,
+            last_name,
+            city,
+            address_line_1,
+            postal_code,
+            email,
+            phone,
+            date_of_birth,
+            total_price,
+            shipping_price,
+            products_price,
+            status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const params = [
+        first_name,
+        last_name,
+        city,
+        address_line_1,
+        postal_code,
+        email,
+        phone,
+        date_of_birth,
+        total_price,
+        shipping_price,
+        products_price,
+        status
+    ];
+
+    try {
+        const [result] = await connection.query(sql, params);
+
+        response.status(201).json({
+            message: 'Ordine creato correttamente',
+            id: result.insertId
+        });
+    } catch (error) {
+        response.status(500).json({
+            error: 'Errore durante la creazione dell’ordine'
+        });
+    }
+}
+
+export { index, show, create };

@@ -1,9 +1,10 @@
 import express from 'express';
-import { index, show } from '../controllers/orders.js';
+import { index, show, create } from '../controllers/orders.js';
 
 const router = express.Router();
 
 router.get('/', index);
-router.get('/:id', index);
+router.get('/:id', show);
+router.post('/', create)
 
 export default router;
