@@ -1,6 +1,7 @@
 const dataTypes = {
     VARCHAR_255: 255,
     VARCHAR_100: 100,
+    VARCHAR_200: 200,
     TEXT: 65535,
     TINY_INT: 255,
     SIZE: [
@@ -13,8 +14,14 @@ const dataTypes = {
         "scura",
         "rossa",
         "ambrata",
-        "bionda"
-    ]
+        "chiara"
+    ],
+    STATUS: [
+        "completed",
+        "pending",
+        "canceled"
+    ],
+    DECIMAL: 99.99
 }
 
 export default dataTypes;
