@@ -1,131 +1,125 @@
+
 import connection from '../db/db.js';
+import { selectAllOrders } from "../db/queries/selectAllOrders.js";
+import { selectOrderById } from "../db/queries/selectOrderById.js";
+import { createOrder } from "../db/queries/createOrder.js";
+import { deleteOrder } from "../db/queries/deleteOrder.js";
+
+const orderController = {
+    index,
+    show,
+    store,
+    destroy
+}
 
 async function index(request, response) {
     const { status } = request.query;
 
-    // Query di base: recupera tutti gli ordini
-    let sql = `
-        SELECT *
-        FROM orders
-    `;
+    const { result: orders, error } = await selectAllOrders(status);
 
-    // Array che conterrà eventuali parametri da passare alla query
-    const params = [];
-
-    // Aggiungo il filtro per status, se presente
-    if (status) {
-        sql += `
-            WHERE status = ?
-        `;
-
-        params.push(status);
+    switch (error) {
+        case 404:
+            return response.status(404).json({
+                error: "Non sono stati trovati ordini",
+                result: null
+            });
+        case 500:
+            return response.status(500).json({
+                error: "C'è stato un errore nel recuperare gli ordini dal db",
+                result: null
+            });
+        default:
+            break;
     }
 
-
-    try {
-        const [results] = await connection.query(sql, params);
-
-        response.json(results);
-    } catch (error) {
-        response.status(500).json({
-            error: 'Errore durante il recupero degli ordini'
-        });
-    }
+    return response.json({
+        error: null,
+        result: orders
+    });
 }
 
 async function show(request, response) {
     const { id } = request.params;
 
-    if (isNaN(id)) {
-        return response.status(400).json({
-            error: 'Id ordine non valido'
-        });
-    }
+    const { result: order, error } = await selectOrderById(id);
 
-    const sql = `
-        SELECT *
-        FROM orders
-        WHERE id = ?
-    `;
-
-    try {
-        const [results] = await connection.query(sql, [id]);
-
-        if (results.length === 0) {
-            return response.status(404).json({
-                error: 'Ordine non trovato'
+    switch (error) {
+        case 400:
+            return response.status(400).json({
+                error: "Id ordine non valido",
+                result: null
             });
+        case 404:
+            return response.status(404).json({
+                error: "Ordine non trovato",
+                result: null
+            });
+        case 500:
+            return response.status(500).json({
+                error: "C'è stato un errore nel recuperare l'ordine dal db",
+                result: null
+            });
+        default:
+            break;
+    }
+
+    return response.json({
+        error: null,
+        result: order
+    });
+}
+
+async function store(request, response) {
+    const { result: orderId, error } = await createOrder(request.body);
+
+    switch (error) {
+        case 500:
+            return response.status(500).json({
+                error: "C'è stato un errore durante la creazione dell'ordine",
+                result: null
+            });
+        default:
+            break;
+    }
+
+    return response.status(201).json({
+        error: null,
+        result: {
+            message: "Ordine creato correttamente",
+            id: orderId
         }
-
-        response.json(results[0]);
-    } catch (error) {
-        response.status(500).json({
-            error: 'Errore durante il recupero dell’ordine'
-        });
-    }
+    });
 }
 
-async function create(request, response) {
-    const {
-        first_name,
-        last_name,
-        city,
-        address_line_1,
-        postal_code,
-        email,
-        phone,
-        date_of_birth,
-        total_price,
-        shipping_price,
-        products_price,
-        status
-    } = request.body;
+async function destroy(request, response) {
+    const { id } = request.params;
 
-    const sql = `
-        INSERT INTO orders (
-            first_name,
-            last_name,
-            city,
-            address_line_1,
-            postal_code,
-            email,
-            phone,
-            date_of_birth,
-            total_price,
-            shipping_price,
-            products_price,
-            status
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+    const { result, error } = await deleteOrder(id);
 
-    const params = [
-        first_name,
-        last_name,
-        city,
-        address_line_1,
-        postal_code,
-        email,
-        phone,
-        date_of_birth,
-        total_price,
-        shipping_price,
-        products_price,
-        status
-    ];
-
-    try {
-        const [result] = await connection.query(sql, params);
-
-        response.status(201).json({
-            message: 'Ordine creato correttamente',
-            id: result.insertId
-        });
-    } catch (error) {
-        response.status(500).json({
-            error: 'Errore durante la creazione dell’ordine'
-        });
+    switch (error) {
+        case 400:
+            return response.status(400).json({
+                error: "Id ordine non valido",
+                result: null
+            });
+        case 404:
+            return response.status(404).json({
+                error: "Ordine non trovato",
+                result: null
+            });
+        case 500:
+            return response.status(500).json({
+                error: "C'è stato un errore durante l'eliminazione dell'ordine",
+                result: null
+            });
+        default:
+            break;
     }
+
+    return response.json({
+        error: null,
+        result
+    });
 }
 
-export { index, show, create };
+export default orderController;
