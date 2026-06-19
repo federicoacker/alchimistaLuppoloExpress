@@ -1,4 +1,4 @@
-import connection from '../db/connection.js';
+import connection from '../db/db.js';
 
 async function index(request, response) {
     const { status } = request.query;
