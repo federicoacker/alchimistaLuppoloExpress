@@ -1,10 +1,11 @@
-import express from 'express';
-import { index, show, create } from '../controllers/orders.js';
+import express from "express";
+import orderController from "../controllers/orders.js";
 
-const router = express.Router();
+const orderRouter = express.Router();
 
-router.get('/', index);
-router.get('/:id', show);
-router.post('/', create)
+orderRouter.get("/", orderController.index);
+orderRouter.get("/:id", orderController.show);
+orderRouter.post("/", orderController.store);
+orderRouter.delete("/:id", orderController.destroy);
 
-export default router;
+export default orderRouter;
