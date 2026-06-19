@@ -1,5 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import productRouter from './routers/products.js';
+
+
 
 // Importazione dei router
 import ordersRouter from './routers/orders.js';
@@ -12,8 +15,11 @@ app.use(cors());
 app.use(express.static(`public`));
 app.use(express.json());
 
-// Configurazione dei router
+
 app.use('/orders', ordersRouter);
+
+app.use("/products", productRouter);
+
 
 app.listen(port, error => {
     if(error){
