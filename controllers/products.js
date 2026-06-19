@@ -49,7 +49,7 @@ async function show(request, response) {
 }
 
 function store(request, response) {
-
+    return response.sendStatus(200);
 }
 
 function modify(request, response) {
