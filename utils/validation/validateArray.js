@@ -4,7 +4,6 @@ export async function validateArray(array = [], validationCallback){
         return {array:[], error:"Le categorie ricevute non sono un array"};
     }
     for(const element of array){
-        console.log(element);
         error = await validationCallback(element);
         if(error){
             return {array:[], error};

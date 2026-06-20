@@ -32,12 +32,10 @@ export async function selectAllProducts(){
 
     try{
         const [products] = await connection.query(query);
-        console.log(products);
         if(products.length === 0){
             return {error:404, result:null};
         }
         const incorporatedProducts = incorporateProducts(products);
-        console.log(incorporatedProducts);
         return {error:null, result:incorporatedProducts};
     }
     catch(error){

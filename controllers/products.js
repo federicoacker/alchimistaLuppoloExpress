@@ -1,3 +1,4 @@
+import { createProduct } from "../db/queries/createProduct.js";
 import { selectAllProducts } from "../db/queries/selectAllProducts.js";
 import { selectProductBySlug } from "../db/queries/selectProductBySlug.js";
 
@@ -49,6 +50,7 @@ async function show(request, response) {
 }
 
 function store(request, response) {
+    createProduct(request.validatedProductPayload);
     return response.sendStatus(200);
 }
 

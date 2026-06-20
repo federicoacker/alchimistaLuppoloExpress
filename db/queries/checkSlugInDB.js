@@ -8,11 +8,12 @@ export async function checkSlugInDB(slug, table){
         LIMIT 1;
     `;
     try{
-        const [product] = await connection.execute(query, [slug]);
-        if(product.length === 0){
+        const [results] = await connection.execute(query, [slug]);
+        if(results.length === 0){
+            console.log("test");
             return {error:404, result:null};
         }
-        return {error:null, result:product[0]};
+        return {error:null, result:results[0]};
     }
     catch (error){
         return {error:500, result:null};
