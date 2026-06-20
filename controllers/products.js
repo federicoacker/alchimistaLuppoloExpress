@@ -65,8 +65,17 @@ async function store(request, response) {
 }
 
 async function modify(request, response) {
-    const result = await modifyProduct(request.productSlug, request.validatedProductPayload);
-    return response.sendStatus(200);
+    const {result, error} = await modifyProduct(request.productSlug, request.validatedProductPayload);
+    if(error === 500){
+        return response.status(500).json({
+            error: "C'è stato un errore nell'update del prodotto",
+            result: null
+        });
+    }
+    return response.json({
+        error:null, 
+        result:result
+    });
 
 }
 
