@@ -1,13 +1,14 @@
-export function validateArray(array = [], validationCallback){
-    let results = Array.isArray(array);
-    if(!results){
-        return {array:[], results: null};
+export async function validateArray(array = [], validationCallback){
+    let error = Array.isArray(array);
+    if(!error){
+        return {array:[], error:"Le categorie ricevute non sono un array"};
     }
     for(const element of array){
-        results = validationCallback(element);
-        if(results){
-            return {array:[], results};
+        console.log(element);
+        error = await validationCallback(element);
+        if(error){
+            return {array:[], error};
         }
     }
-    return {array, results};
+    return {array, error};
 }
