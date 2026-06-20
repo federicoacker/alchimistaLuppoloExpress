@@ -47,7 +47,7 @@ export async function createProduct(productPayload){
     try {
         const createdSlug = await createSlug(name, "products");
         productPayload.slug = createdSlug;
-        const results = await connection.execute(insertProductQuery, [
+        const [creationResults] = await connection.execute(insertProductQuery, [
             name, 
             description, 
             short_description, 
@@ -87,7 +87,7 @@ export async function createProduct(productPayload){
             const {result, error} = await linkCategoryProducts(currentCategoryProductId);
         }
         
-        return {error:null, results};
+        return {error:null, result:creationResults};
 
     }
     catch(error){
@@ -95,7 +95,7 @@ export async function createProduct(productPayload){
     }
 }
 
-async function findCategoryProductIds(category, product){
+export async function findCategoryProductIds(category, product){
     const selectProductQuery = `
     SELECT p.id
     FROM products as p
@@ -119,7 +119,7 @@ async function findCategoryProductIds(category, product){
     }
 }
 
-async function linkCategoryProducts({categoryId, productId}){
+export async function linkCategoryProducts({categoryId, productId}){
     const linkQuery = `
     INSERT INTO category_product(product_id, category_id)
     VALUES(?, ?);

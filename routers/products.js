@@ -8,12 +8,12 @@ const productRouter = express.Router();
 
 productRouter.get("/", productController.index);
 
-productRouter.get("/:productSlug", [checkProductSlugExists,productController.show]);
+productRouter.get("/:productSlug", [checkProductSlugExists, productController.show]);
 
 productRouter.post("/", [validateProductRequestPayload, productController.store]);
 
-productRouter.patch("/:productSlug", productController.modify);
+productRouter.patch("/:productSlug", [checkProductSlugExists, validateProductRequestPayload, productController.modify]);
 
-productRouter.delete("/:productSlug", productController.destroy);
+productRouter.delete("/:productSlug", [checkProductSlugExists, productController.destroy]);
 
 export default productRouter;
