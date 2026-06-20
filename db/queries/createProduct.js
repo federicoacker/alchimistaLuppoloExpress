@@ -82,7 +82,6 @@ export async function createProduct(productPayload){
             }
             categoryProductIds.push(categoryProductId);
         }
-        console.log(categoryProductIds);
         for(let i = 0; i < categoryProductIds.length; i++){
             const currentCategoryProductId = categoryProductIds[i];
             const {result, error} = await linkCategoryProducts(currentCategoryProductId);
@@ -115,7 +114,7 @@ async function findCategoryProductIds(category, product){
         return {error: null, result:{productId: productId[0].id, categoryId: categoryId[0].id}};
     }
     catch(error){
-        console.log(error);
+
         return {error:500, result:null};
     }
 }

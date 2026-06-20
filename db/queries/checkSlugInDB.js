@@ -10,7 +10,6 @@ export async function checkSlugInDB(slug, table){
     try{
         const [results] = await connection.execute(query, [slug]);
         if(results.length === 0){
-            console.log("test");
             return {error:404, result:null};
         }
         return {error:null, result:results[0]};
