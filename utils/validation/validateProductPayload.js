@@ -40,7 +40,9 @@ export async function validateProductPayload(productPayload, isPatch = false) {
     const extraProductFields = productFieldsReceived.difference(validProductFields);
     const missingProductFields = isPatch ? [] : validProductFields.difference(productFieldsReceived);
 
-
+    if(productFieldsReceived.size === 0){
+        errors.push("Non sono state passate fields");
+    }
     if (!isPatch && missingProductFields.size !== 0) {
         errors.push(`Mancano le fields ${Array.from(missingProductFields).join(" ")} al prodotto passato al server`);
     }

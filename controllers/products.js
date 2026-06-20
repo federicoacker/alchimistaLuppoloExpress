@@ -1,4 +1,5 @@
 import { createProduct } from "../db/queries/createProduct.js";
+import { modifyProduct } from "../db/queries/modifyProduct.js";
 import { selectAllProducts } from "../db/queries/selectAllProducts.js";
 import { selectProductBySlug } from "../db/queries/selectProductBySlug.js";
 
@@ -49,12 +50,23 @@ async function show(request, response) {
     });
 }
 
-function store(request, response) {
-    createProduct(request.validatedProductPayload);
-    return response.sendStatus(200);
+async function store(request, response) {
+    const {result, error} = await createProduct(request.validatedProductPayload);
+    if(error === 500){
+        return response.status(500).json({
+            error:"C'è stato un errore nella creazione del prodotto in db",
+            result:null
+        });
+    }
+    return response.json({
+        error:null,
+        result: result.insertId
+    });
 }
 
-function modify(request, response) {
+async function modify(request, response) {
+    const result = await modifyProduct(request.productSlug, request.validatedProductPayload);
+    return response.sendStatus(200);
 
 }
 

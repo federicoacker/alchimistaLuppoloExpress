@@ -11,7 +11,7 @@ export async function checkProductSlugExists(request, response, next){
         });
     }
 
-    const {result: product, error} = checkSlugInDB(validatedSlug, "products");
+    const {result: product, error} = await checkSlugInDB(validatedSlug, "products");
     switch(error){
         case 404:
             return response.status(404).json({
