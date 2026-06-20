@@ -1,4 +1,5 @@
 import { createProduct } from "../db/queries/createProduct.js";
+import { destroyProduct } from "../db/queries/destroyProduct.js";
 import { modifyProduct } from "../db/queries/modifyProduct.js";
 import { selectAllProducts } from "../db/queries/selectAllProducts.js";
 import { selectProductBySlug } from "../db/queries/selectProductBySlug.js";
@@ -79,8 +80,16 @@ async function modify(request, response) {
 
 }
 
-function destroy(request, response) {
-
+async function destroy(request, response) {
+    const slug = request.productSlug;
+    const {error, result} = await destroyProduct(slug);
+    if(error === 500){
+        return response.status(500).json({
+            error:"C'è stato un errore nella destroy del prodotto",
+            result:null
+        });
+    }
+    return response.sendStatus(204);
 }
 
 export default productController;
