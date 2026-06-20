@@ -69,9 +69,7 @@ export async function createProduct(productPayload){
         for(let i = 0; i < categories.length; i++){
             const currentCategory = categories[i]
             const {result, error} = await checkSlugInDB(currentCategory.slug, "categories");
-            console.log(result);
             if(error){
-                console.log("I Exited");
                 return {error, result:null};
             }
         }
@@ -84,6 +82,7 @@ export async function createProduct(productPayload){
             }
             categoryProductIds.push(categoryProductId);
         }
+        console.log(categoryProductIds);
         for(let i = 0; i < categoryProductIds.length; i++){
             const currentCategoryProductId = categoryProductIds[i];
             const {result, error} = await linkCategoryProducts(currentCategoryProductId);
@@ -111,7 +110,6 @@ async function findCategoryProductIds(category, product){
     `;
 
     try{
-        console.log(product.slug, category.slug);
         const [productId] = await connection.execute(selectProductQuery, [product.slug]);
         const [categoryId] = await connection.execute(selectCategoryQuery, [category.slug]);
         return {error: null, result:{productId: productId[0].id, categoryId: categoryId[0].id}};
@@ -132,7 +130,6 @@ async function linkCategoryProducts({categoryId, productId}){
         return {error:null, result}
     }
     catch(error){
-        
         return {error:500, result:null};
     }
 }
