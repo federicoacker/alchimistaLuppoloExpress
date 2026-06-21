@@ -193,7 +193,7 @@ Retrieves a list of products with optional filtering, sorting, and pagination.
 **Query Parameters (optional):**
 - `orderBy` - Sort by field. Accepted values: `created_at`, `updated_at`, `name`, `category_slug`, `origin`, `brewery`, `price`, `ibu`, `abv`, `size`
 - `order` - Sort direction: `asc` or `desc` (default: `asc`)
-- `offset` - Pagination offset (default: 0)
+- `offset` - Pagination offset (default: 0) will return an error if the offset is greater than the number of products in the DB.
 - `limit` - Number of results to return, max 10 (default: 10)
 - `category` - Filter by category slug or pass "any"
 - `search` - Search in product name and description
