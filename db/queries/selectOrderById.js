@@ -12,6 +12,7 @@ export async function selectOrderById(id) {
         SELECT *
         FROM orders
         WHERE id = ?
+        AND deleted = 0
     `;
 
     try {

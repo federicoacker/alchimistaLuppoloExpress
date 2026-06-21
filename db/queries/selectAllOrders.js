@@ -5,6 +5,7 @@ export async function selectAllOrders(status) {
     let query = `
         SELECT *
         FROM orders
+        WHERE deleted = 0
     `;
 
     const params = [];
