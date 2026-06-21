@@ -1,6 +1,9 @@
 import dataTypes from "../../db/dataTypes.js";
 import { validateString } from "./validateString.js";
 import { validateNumber } from "./validateNumber.js";
+import { validateSlug } from "./validateSlug.js";
+import { selectProductBySlug } from "../../db/queries/selectProductBySlug.js";
+import { validateFloatNumber } from "./validateFloatNumber.js";
 
 const validOrderFields = new Set(
     [
@@ -108,7 +111,17 @@ function switchValidator(key, orderPayload) {
             break;
 
         case "total_price":
+            result = validateFloatNumber(orderPayload[key]);
+            if(result === null || result !== (orderPayload["shipping_price"] + orderPayload["products_price"])){ 
+                return "Il total price inserito non è valido"
+            };
+            break;
         case "shipping_price":
+            result = validateFloatNumber(orderPayload[key]);
+            if(result === null){
+                return "Lo shipping price inserito non è valido";
+            }
+            break;
         case "products_price":
             if (!isValidPrice(orderPayload[key])) {
                 return `Il campo ${key} non è valido`;
@@ -130,7 +143,7 @@ function switchValidator(key, orderPayload) {
                 if (!product || typeof product !== "object") {
                     return "I dati dei prodotti inseriti non sono validi";
                 }
-                const productSlug = validateString(product.product_slug);
+                const productSlug = validateSlug(product.product_slug);
                 const quantity = validateNumber(product.quantity);
                 if (!productSlug || quantity === null || quantity <= 0) {
                     return "I dati dei prodotti inseriti non sono validi";
@@ -148,7 +161,7 @@ function isValidEmail(value) {
 }
 
 function isValidDate(value) {
-    return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
+    return /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(Date.parse(value));
 }
 
 function isValidPrice(value) {
@@ -158,7 +171,7 @@ function isValidPrice(value) {
         return false;
     }
 
-    if (Number.isNaN(parsedValue)) {
+    if (isNaN(parsedValue)) {
         return false;
     }
 

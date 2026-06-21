@@ -11,7 +11,7 @@ export async function deleteOrder(id) {
     const query = `
     UPDATE orders
     SET deleted = 1
-    WHERE id = ?
+    WHERE id = ? AND deleted = 0;
     `;
 
     try {

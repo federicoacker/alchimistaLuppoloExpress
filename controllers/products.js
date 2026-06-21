@@ -59,7 +59,7 @@ async function store(request, response) {
             result:null
         });
     }
-    return response.json({
+    return response.status(201).json({
         error:null,
         result: result.insertId
     });
