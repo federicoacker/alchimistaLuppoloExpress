@@ -47,6 +47,13 @@ export async function createProduct(productPayload){
     try {
         const createdSlug = await createSlug(name, "products");
         productPayload.slug = createdSlug;
+        for(let i = 0; i < categories.length; i++){
+            const currentCategory = categories[i]
+            const {result, error} = await checkSlugInDB(currentCategory.slug, "categories");
+            if(error){
+                return {error, result:null};
+            }
+        }
         const [creationResults] = await connection.execute(insertProductQuery, [
             name, 
             description, 
@@ -66,13 +73,6 @@ export async function createProduct(productPayload){
             subtype,
             createdSlug
         ]);
-        for(let i = 0; i < categories.length; i++){
-            const currentCategory = categories[i]
-            const {result, error} = await checkSlugInDB(currentCategory.slug, "categories");
-            if(error){
-                return {error, result:null};
-            }
-        }
         const categoryProductIds = [];
         for(let i = 0; i < categories.length; i++){
             const currentCategory = categories[i];
