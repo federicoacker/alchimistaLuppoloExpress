@@ -819,5 +819,5 @@ Validation error responses follow this format:
 - Product slugs and category slugs are automatically generated from their names
 - When creating products, category slugs must reference existing categories in the database
 - For PATCH requests on products, any combination of fields can be updated
-- For PATCH requests on categories, any combination of fields can be updated
+- There is currently no PATCH endpoint for categories, delete the old one and create a new one
 - Authentication/Authorization may be added in future versions
