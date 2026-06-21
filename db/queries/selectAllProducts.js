@@ -1,7 +1,45 @@
 import { incorporateProducts } from "../../utils/mapping/incorporateProducts.js";
 import connection from "../db.js";
 
-export async function selectAllProducts(){
+export async function selectAllProducts(options){
+    const {
+        validatedOrderBy,
+        validatedOrder,
+        validatedOffset,
+        validatedLimit,
+        validatedCategory,
+        validatedSearch
+    } = options || {};
+    console.log(options);
+    let whereString = `WHERE 1 `;
+    let orderString = "";
+    let offsetString = "OFFSET 0";
+    let limitString = "LIMIT 10";
+    
+    if(validatedSearch){
+        whereString += `AND (p.name LIKE "%${validatedSearch}%" or p.description LIKE "%${validatedSearch}%") `;
+    }
+    if(validatedCategory){
+        whereString += `AND c.slug = "${validatedCategory} "`;
+    }
+    if(validatedOrderBy){
+        orderString = `ORDER BY ${validatedOrderBy}`
+        if(validatedOrder){
+            orderString += ` ${validatedOrder}`;
+        }
+        else {
+            orderString += ` asc`;
+        }
+    }
+    if(validatedOffset){
+        offsetString = `OFFSET ${validatedOffset}`;
+    }
+    if(validatedLimit){
+        limitString = `LIMIT ${validatedLimit}`;
+    }
+
+
+
     const query=`
     SELECT 
         p.slug,
@@ -28,8 +66,11 @@ export async function selectAllProducts(){
         ON cp.product_id = p.id
     JOIN categories as c 
         ON cp.category_id = c.id
+    ${whereString}
+    ${orderString}
+    ${limitString} ${offsetString};
     `;
-
+    console.log(query);
     try{
         const [products] = await connection.query(query);
         if(products.length === 0){

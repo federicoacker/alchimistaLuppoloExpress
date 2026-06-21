@@ -3,10 +3,11 @@ import express from "express";
 import productController from "../controllers/products.js";
 import { checkProductSlugExists } from "../middlewares/checkProductSlugExists.js";
 import { validateProductRequestPayload } from "../middlewares/validateProductRequestPayload.js";
+import { validatedProductQueryRequest } from "../middlewares/validatedProductQueryRequest.js";
 
 const productRouter = express.Router();
 
-productRouter.get("/", productController.index);
+productRouter.get("/", [validatedProductQueryRequest, productController.index]);
 
 productRouter.get("/:productSlug", [checkProductSlugExists, productController.show]);
 
