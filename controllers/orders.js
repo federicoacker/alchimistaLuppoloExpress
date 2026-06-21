@@ -8,7 +8,7 @@ import { deleteOrder } from "../db/queries/deleteOrder.js";
 const orderController = {
     index,
     show,
-    store,
+    create,
     destroy
 }
 
@@ -69,10 +69,22 @@ async function show(request, response) {
     });
 }
 
-async function store(request, response) {
-    const { result: orderId, error } = await createOrder(request.body);
+async function create(request, response) {
+    const { result, error } = await createOrder(request.body);
 
     switch (error) {
+        case 400:
+            return response.status(400).json({
+                error: "I dati dell'ordine non sono validi",
+                result
+            });
+
+        case 404:
+            return response.status(404).json({
+                error: result,
+                result: null
+            });
+
         case 500:
             return response.status(500).json({
                 error: "C'è stato un errore durante la creazione dell'ordine",
@@ -86,7 +98,7 @@ async function store(request, response) {
         error: null,
         result: {
             message: "Ordine creato correttamente",
-            id: orderId
+            id: result
         }
     });
 }
