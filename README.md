@@ -413,7 +413,7 @@ Updates an existing product by its slug identifier. Only the fields that need to
 **Parameters:**
 - `productSlug` (string, required) - The unique slug identifier of the product
 
-**Request Body Schema:** *(Same as Create Product, but all fields are optional)*
+**Request Body Schema:** *(Same as Create Product, but all fields are optional, does NOT currently allow to modify categories tied to the product)*
 
 **Example Request (updating only price and abv):**
 
