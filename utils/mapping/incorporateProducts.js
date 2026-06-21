@@ -5,7 +5,6 @@ export function incorporateProducts(products) {
     let equalProducts = [];
     let groupedProducts = [];
     let lastSlug;
-    console.log(products);
     for (let i = 0; i < products.length; i++) {
         const currentProduct = products[i];
         if (i === 0) {
