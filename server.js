@@ -6,6 +6,7 @@ import productRouter from './routers/products.js';
 
 // Importazione dei router
 import ordersRouter from './routers/orders.js';
+import { getProductCount } from './db/queries/getProductCount.js';
 
 const app = express();
 
@@ -14,7 +15,6 @@ const port = process.env.SERVER_PORT || 3000;
 app.use(cors());
 app.use(express.static(`public`));
 app.use(express.json());
-
 
 app.use('/orders', ordersRouter);
 

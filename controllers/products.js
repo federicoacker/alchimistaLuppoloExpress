@@ -13,7 +13,7 @@ const productController = {
 }
 
 async function index(request, response) {
-    const {result : products, error} = await selectAllProducts();
+    const {result : products, error} = await selectAllProducts(request.validatedQuery);
     switch(error){
         case 404:
             return response.status(404).json({
