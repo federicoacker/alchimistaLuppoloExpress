@@ -69,7 +69,6 @@ export async function selectAllProducts(options){
     ${orderString}
     ${limitString} ${offsetString};
     `;
-    console.log(query);
     try{
         const [products] = await connection.query(query);
         if(products.length === 0){

@@ -20,10 +20,8 @@ export async function modifyProduct(slug, productPayload) {
     values.push(slug);
     try {
         const [result] = await connection.execute(finalizedQuery, values);
-        const categories = productPayload?.categories;
         return { error: null, result: "Entry modificata con successo" };
     } catch (error) {
-        console.log(error);
         return { error: 500, result: null };
     }
 

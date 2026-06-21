@@ -38,7 +38,6 @@ export async function validateProductQuery(queryObject){
     }
 
     const acceptedCategories = categoryList?.map(category => category.slug.toLowerCase());
-    console.log(categoryList);
 
     let validatedOrderBy;
     let validatedOrder;
