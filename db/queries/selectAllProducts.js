@@ -19,7 +19,7 @@ export async function selectAllProducts(options){
         whereString += `AND (p.name LIKE "%${validatedSearch}%" or p.description LIKE "%${validatedSearch}%") `;
     }
     if(validatedCategory){
-        whereString += `AND c.slug = "${validatedCategory} "`;
+        whereString += `AND c.slug = "${validatedCategory}" `;
     }
     if(validatedOrderBy){
         orderString = `ORDER BY ${validatedOrderBy}`
@@ -69,7 +69,7 @@ export async function selectAllProducts(options){
     ${orderString}
     ${limitString} ${offsetString};
     `;
-
+    console.log(query);
     try{
         const [products] = await connection.query(query);
         if(products.length === 0){
