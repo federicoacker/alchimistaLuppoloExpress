@@ -44,7 +44,7 @@ export async function validateProductPayload(productPayload, isPatch = false) {
         errors.push("Non sono state passate fields");
     }
     if (!isPatch && missingProductFields.size !== 0) {
-        errors.push(`Mancano le fields ${Array.from(missingProductFields).join(" ")} al prodotto passato al server`);
+        errors.push(`Mancano le fields [${Array.from(missingProductFields).join(", ")}] al prodotto passato al server`);
     }
     if (extraProductFields.size !== 0) {
         errors.push(`Ci sono fields extra nel prodotto passato al server: ${Array.from(extraProductFields).join(" ")}`);
