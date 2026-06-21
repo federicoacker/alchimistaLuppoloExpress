@@ -1,12 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import productRouter from './routers/products.js';
-
-
 
 // Importazione dei router
+import categoryRouter from './routers/categories.js';
 import ordersRouter from './routers/orders.js';
-import { getProductCount } from './db/queries/getProductCount.js';
+import productRouter from './routers/products.js';
 
 const app = express();
 
@@ -19,6 +17,8 @@ app.use(express.json());
 app.use('/orders', ordersRouter);
 
 app.use("/products", productRouter);
+
+app.use("/categories", categoryRouter)
 
 
 app.listen(port, error => {
