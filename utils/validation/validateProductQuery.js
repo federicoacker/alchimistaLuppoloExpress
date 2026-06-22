@@ -2,6 +2,7 @@ import { getProductCount } from "../../db/queries/getProductCount.js";
 import { selectAllCategories } from "../../db/queries/selectAllCategories.js";
 import {validateString} from "./validateString.js";
 import { validateNumber } from "./validateNumber.js";
+import dataTypes from "../../db/dataTypes.js";
 
 
 export async function validateProductQuery(queryObject){
@@ -45,6 +46,7 @@ export async function validateProductQuery(queryObject){
     let validatedCategory;
     let validatedSearch;
     let validatedLimit;
+    let validatedBrewery;
 
     for(const key of keys){
         switch(key){
@@ -88,8 +90,14 @@ export async function validateProductQuery(queryObject){
                 break;
             case "limit":
                 validatedLimit = validateNumber(queryObject["limit"]);
-                if(!validatedLimit || validatedLimit > 10 || validatedLimit < 0){
+                if(validatedLimit === null || validatedLimit > 10 || validatedLimit < 0){
                     errors.push("Il valore inserito in limit non è valido");
+                }
+                break;
+            case "brewery":
+                validatedBrewery = validateString(queryObject["brewery"]);
+                if(!validatedBrewery || validatedBrewery.length > dataTypes.VARCHAR_255 ){
+                    errors.push("Il valore inserito per brewery non è valido");
                 }
                 break;
             default:
@@ -104,7 +112,8 @@ export async function validateProductQuery(queryObject){
         validatedOffset,
         validatedLimit,
         validatedCategory,
-        validatedSearch
+        validatedSearch,
+        validatedBrewery
     }
 
     if(errors.length > 0){

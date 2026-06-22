@@ -8,7 +8,8 @@ export async function selectAllProducts(options){
         validatedOffset,
         validatedLimit,
         validatedCategory,
-        validatedSearch
+        validatedSearch,
+        validatedBrewery
     } = options || {};
     let whereString = `WHERE 1 `;
     let orderString = "";
@@ -20,6 +21,9 @@ export async function selectAllProducts(options){
     }
     if(validatedCategory){
         whereString += `AND c.slug = "${validatedCategory}" `;
+    }
+    if(validatedBrewery){
+        whereString += `AND p.brewery = "${validatedBrewery}" `;
     }
     if(validatedOrderBy){
         orderString = `ORDER BY ${validatedOrderBy}`
