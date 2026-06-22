@@ -67,7 +67,7 @@ export async function selectAllProducts(options){
         p.ingredients,
         p.size,
         p.colour,
-        p.subtype
+        p.subtype,
         c.name as category_name,
         c.slug as category_slug
     FROM products as p
