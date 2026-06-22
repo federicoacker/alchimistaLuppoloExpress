@@ -66,6 +66,8 @@ export async function selectAllProducts(options){
         p.suggested_glass,
         p.ingredients,
         p.size,
+        p.colour,
+        p.subtype
         c.name as category_name,
         c.slug as category_slug
     FROM products as p

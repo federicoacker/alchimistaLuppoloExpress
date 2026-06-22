@@ -18,7 +18,9 @@ export function mapProducts(products){
             suggested_glass: product.suggested_glass,
             ingredients: product.ingredients,
             categories: product.categories,
-            size: product.size
+            size: product.size,
+            colour: product.colour,
+            subtype: product.subtype
         };
     });
     return mappedProducts;
