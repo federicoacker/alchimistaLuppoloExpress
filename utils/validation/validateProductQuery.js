@@ -47,6 +47,7 @@ export async function validateProductQuery(queryObject){
     let validatedSearch;
     let validatedLimit;
     let validatedBrewery;
+    let validatedExcludedBrewery;
 
     for(const key of keys){
         switch(key){
@@ -100,6 +101,12 @@ export async function validateProductQuery(queryObject){
                     errors.push("Il valore inserito per brewery non è valido");
                 }
                 break;
+            case "excluded-brewery":
+                validatedExcludedBrewery = validateString(queryObject["excluded-brewery"]);
+                if(!validatedExcludedBrewery || validatedExcludedBrewery.length > dataTypes.VARCHAR_255){
+                    errors.push("Il valore inserito per la brewery da escludere non è valido");
+                }
+                break;
             default:
                 errors.push(`La chiave ${key} non è un parametro di query accettato`);
                 break;
@@ -113,7 +120,8 @@ export async function validateProductQuery(queryObject){
         validatedLimit,
         validatedCategory,
         validatedSearch,
-        validatedBrewery
+        validatedBrewery,
+        validatedExcludedBrewery
     }
 
     if(errors.length > 0){
