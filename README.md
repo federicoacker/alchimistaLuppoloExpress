@@ -197,6 +197,8 @@ Retrieves a list of products with optional filtering, sorting, and pagination.
 - `limit` - Number of results to return, max 10 (default: 10)
 - `category` - Filter by category slug or pass "any"
 - `search` - Search in product name and description
+- `brewery` - Filter by brewery name
+- `excluded-brewery` - Exclude products from a specific brewery
 
 **Response:** `200 OK`
 
@@ -223,6 +225,7 @@ Retrieves a list of products with optional filtering, sorting, and pagination.
       "ingredients": "Water, Barley, Hops, Yeast",
       "size": "Bottiglia 33",
       "colour": "chiara",
+      "subtype": "Pilsner",
       "category_name": "Lager",
       "category_slug": "lager"
     }
@@ -293,6 +296,7 @@ Retrieves a specific product by its slug identifier.
     "ingredients": "Water, Barley, Hops, Yeast",
     "size": "Bottiglia 33",
     "colour": "chiara",
+    "subtype": "Pilsner",
     "category_name": "Lager",
     "category_slug": "lager"
   }
@@ -629,24 +633,35 @@ Retrieves a specific order by its ID.
 
 **POST** `/orders`
 
-Creates a new order.
+Creates a new order with associated products. The order creation is performed as a database transaction - if any product is not found, the entire order creation is rolled back.
 
 **Request Body Schema:**
 
 ```json
 {
-  "first_name": "string [REQUIRED]",
-  "last_name": "string [REQUIRED]",
-  "city": "string [REQUIRED]",
-  "address_line_1": "string [REQUIRED]",
-  "postal_code": "string [REQUIRED]",
-  "email": "string [REQUIRED]",
-  "phone": "string [REQUIRED]",
-  "date_of_birth": "string (YYYY-MM-DD) [REQUIRED]",
-  "total_price": "float [REQUIRED]",
+  "first_name": "string (max 150) [REQUIRED]",
+  "last_name": "string (max 150) [REQUIRED]",
+  "city": "string (max 255) [REQUIRED]",
+  "address_line_1": "string (max 255) [REQUIRED]",
+  "postal_code": "string (max 20) [REQUIRED]",
+  "email": "string (max 255, must be valid email) [REQUIRED]",
+  "phone": "string (max 15) [REQUIRED]",
+  "date_of_birth": "string (format: YYYY-MM-DD) [REQUIRED]",
+  "total_price": "float (must equal shipping_price + products_price) [REQUIRED]",
   "shipping_price": "float [REQUIRED]",
-  "products_price": "float [REQUIRED]",
-  "status": "string - one of: 'completed', 'pending', 'canceled' [REQUIRED]"
+  "products_price": "float (max 99.99) [REQUIRED]",
+  "status": "string - one of: 'completed', 'pending', 'canceled' [REQUIRED]",
+  "products": "array of objects [REQUIRED]"
+}
+```
+
+**Products Array Schema:**
+
+Each item in the products array must have:
+```json
+{
+  "product_slug": "string (the slug of an existing product) [REQUIRED]",
+  "quantity": "integer (must be > 0) [REQUIRED]"
 }
 ```
 
@@ -665,7 +680,17 @@ Creates a new order.
   "total_price": 75.00,
   "shipping_price": 10.00,
   "products_price": 65.00,
-  "status": "pending"
+  "status": "pending",
+  "products": [
+    {
+      "product_slug": "peroni-lager",
+      "quantity": 2
+    },
+    {
+      "product_slug": "guinness-stout",
+      "quantity": 1
+    }
+  ]
 }
 ```
 
@@ -681,7 +706,26 @@ Creates a new order.
 }
 ```
 
-**Error Response:**
+**Error Responses:**
+
+- **400 Bad Request** - Validation error
+```json
+{
+  "error": "I dati dell'ordine non sono validi",
+  "result": [
+    "L'email inserita non è valida",
+    "Il numero di telefono inserito non è valido"
+  ]
+}
+```
+
+- **404 Not Found** - Product not found in database
+```json
+{
+  "error": "Prodotto peroni-lager non trovato",
+  "result": null
+}
+```
 
 - **500 Internal Server Error** - Database creation error
 ```json
@@ -697,7 +741,7 @@ Creates a new order.
 
 **DELETE** `/orders/:id`
 
-Deletes an order by its ID.
+Deletes an order by its ID. (This is a soft deletion, it simply sets a delete field to 1 and stops the database from fetching those results)
 
 **Parameters:**
 - `id` (number, required) - The unique numeric identifier of the order
@@ -818,6 +862,11 @@ Validation error responses follow this format:
 - Static files are served from the `public` directory
 - Product slugs and category slugs are automatically generated from their names
 - When creating products, category slugs must reference existing categories in the database
-- For PATCH requests on products, any combination of fields can be updated
+- For PATCH requests on products, any combination of fields can be updated, except for categories
 - There is currently no PATCH endpoint for categories, delete the old one and create a new one
+- Order creation is performed as a database transaction - if any validation fails or a product is not found, the entire order is rolled back
+- When creating orders, the `total_price` must exactly equal `shipping_price + products_price`
+- Email validation follows a basic pattern (must contain @ and a domain)
+- Date of birth must be in ISO 8601 format (YYYY-MM-DD)
+- Product filtering by brewery or excluded-brewery is case-insensitive
 - Authentication/Authorization may be added in future versions

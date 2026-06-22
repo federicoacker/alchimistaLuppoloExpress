@@ -96,13 +96,13 @@ export async function validateProductQuery(queryObject){
                 }
                 break;
             case "brewery":
-                validatedBrewery = validateString(queryObject["brewery"]);
+                validatedBrewery = validateString(queryObject["brewery"].toLowerCase());
                 if(!validatedBrewery || validatedBrewery.length > dataTypes.VARCHAR_255 ){
                     errors.push("Il valore inserito per brewery non è valido");
                 }
                 break;
             case "excluded-brewery":
-                validatedExcludedBrewery = validateString(queryObject["excluded-brewery"]);
+                validatedExcludedBrewery = validateString(queryObject["excluded-brewery"].toLowerCase());
                 if(!validatedExcludedBrewery || validatedExcludedBrewery.length > dataTypes.VARCHAR_255){
                     errors.push("Il valore inserito per la brewery da escludere non è valido");
                 }
