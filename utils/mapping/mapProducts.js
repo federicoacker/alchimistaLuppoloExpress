@@ -8,7 +8,7 @@ export function mapProducts(products){
             origin: product.origin,
             brewery: product.brewery,
             abv: Number(product.abv),
-            image: product.image,
+            image: `${process.env.PRODUCT_IMG_PATH}/${product.image}`,
             serving_temp: product.serving_temp,
             price: Number(product.price),
             updated_at: product.updated_at,
