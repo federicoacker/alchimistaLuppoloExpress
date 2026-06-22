@@ -1,3 +1,6 @@
+import connection from "../../db/db.js";
+import { createCategory } from "../../db/queries/createCategory.js";
+
 const categories = [
     {
         "name": "Belgian Ale",
@@ -63,6 +66,23 @@ const categories = [
         "name": "Gluten Free",
         "slug": "gluten-free",
         "short_description": "Birra con certificazione Gluten Free"
+    },
+    {
+        "name": "Sour",
+        "slug": "sour",
+        "short_description": "Birra caratterizzata da una spiccata acidità, ottenuta tramite fermentazioni con lieviti e batteri selezionati o tecniche di acidificazione controllata. Presenta aromi freschi, complessi e spesso fruttati."
     }
 ];
+async function populateCategories(){
+    for(let i = 0 ; i<categories.length; i++){
+        const current = categories[i];
+        const {error, result} = await createCategory(current);
+        console.log(result);
+    }
+    connection.end();
+}
+
+populateCategories();
+
+
 export default categories;

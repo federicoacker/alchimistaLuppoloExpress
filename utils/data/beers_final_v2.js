@@ -1,3 +1,6 @@
+import connection from "../../db/db.js";
+import { createProduct } from "../../db/queries/createProduct.js";
+
 const beers = [
   {
     "name": "Elisir Dorato",
@@ -450,7 +453,7 @@ const beers = [
     "abv": 18.5,
     "serving_temp": "12-14°C",
     "price": 9.0,
-    "ibu": null,
+    "ibu": 20,
     "pairs_with": "Cioccolato fondente, meditazione",
     "suggested_glass": "Snifter",
     "ingredients": "Acqua, malto d'orzo, luppolo, lievito",
@@ -654,7 +657,7 @@ const beers = [
     "abv": 5.5,
     "serving_temp": "8-10°C",
     "price": 3.25,
-    "ibu": null,
+    "ibu": 10,
     "pairs_with": "Dessert al cacao",
     "suggested_glass": "Nonic Pint",
     "ingredients": "Acqua, malto d'orzo, cocco, luppolo, lievito",
@@ -704,7 +707,7 @@ const beers = [
     "abv": 3.5,
     "serving_temp": "4-6°C",
     "price": 2.75,
-    "ibu": null,
+    "ibu": 18,
     "pairs_with": "Dessert ai frutti rossi",
     "suggested_glass": "Calice",
     "ingredients": "Acqua, malto d'orzo, frumento, lampone, rabarbaro, lievito",
@@ -754,7 +757,7 @@ const beers = [
     "abv": 6.3,
     "serving_temp": "10-12°C",
     "price": 3.25,
-    "ibu": null,
+    "ibu": 32,
     "pairs_with": "Costine BBQ",
     "suggested_glass": "Snifter",
     "ingredients": "Acqua, malto d'orzo, malti affumicati, luppolo, lievito",
@@ -837,7 +840,7 @@ const beers = [
     "pairs_with": "Pizza, salumi",
     "suggested_glass": "Pils",
     "ingredients": "Acqua, malto d'orzo, luppolo, lievito",
-    "size": "Lattina  40",
+    "size": "Lattina 40",
     "colour": "chiara"
   },
   {
@@ -1715,4 +1718,13 @@ const beers = [
     "size": "Lattina 33",
     "colour": "chiara"
   }
-]
+];
+
+async function populateProducts(){
+  for(const productIndex in beers){
+    const {result, error} = await createProduct(beers[productIndex]);
+    console.log(productIndex+1, error);
+  }
+  connection.end();
+}
+populateProducts();
