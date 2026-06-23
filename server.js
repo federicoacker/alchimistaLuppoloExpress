@@ -5,6 +5,7 @@ import cors from 'cors';
 import categoryRouter from './routers/categories.js';
 import ordersRouter from './routers/orders.js';
 import productRouter from './routers/products.js';
+import paymentsRouter from "./routers/payments.js";
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use('/orders', ordersRouter);
 app.use("/products", productRouter);
 
 app.use("/categories", categoryRouter)
+
+app.use("/payments", paymentsRouter);
 
 
 app.listen(port, error => {
