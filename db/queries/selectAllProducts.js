@@ -20,8 +20,18 @@ export async function selectAllProducts(options){
     if(validatedSearch){
         whereString += `AND (p.name LIKE "%${validatedSearch}%" or p.description LIKE "%${validatedSearch}%") `;
     }
-    if(validatedCategory){
-        whereString += `AND c.slug = "${validatedCategory}" `;
+    console.log(validatedCategory);
+    if(validatedCategory.length !== 0){
+        whereString += `AND (c.slug = "${validatedCategory[0]}" `
+        if(validatedCategory.length === 1){
+            whereString += ")";
+        }
+        else if (validatedCategory.length > 1) {
+            for(let i = 1; i<validatedCategory.length; i++){
+                whereString +=`OR c.slug = "${validatedCategory[i]}" `
+            }
+            whereString += ")";
+        }
     }
     if(validatedBrewery){
         whereString += `AND p.brewery = "${validatedBrewery}" `;
@@ -44,7 +54,7 @@ export async function selectAllProducts(options){
     if(validatedLimit){
         limitString = `LIMIT ${validatedLimit}`;
     }
-
+    console.log("Made it past the checks");
 
 
     const query=`
@@ -80,6 +90,7 @@ export async function selectAllProducts(options){
     ${limitString} ${offsetString}
     ;
     `;
+    console.log(query);
     try{
         const [products] = await connection.query(query);
         if(products.length === 0){
