@@ -6,11 +6,11 @@ export async function selectAllCategories(){
     FROM categories;
     `;
     try{
-        const results = await connection.execute(selectQuery);
+        const [results] = await connection.execute(selectQuery);
         if(results[0].length === 0){
             return {result: null, error:404};
         } 
-        return {result:results[0], error:null};
+        return {result:results, error:null};
     }
     catch(error){
         return{result:null, error:500};

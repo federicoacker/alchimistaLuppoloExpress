@@ -28,7 +28,7 @@ async function index(request, response){
 
     return response.json({
         result:result,
-        erorr:null
+        error:null
     });
 }
 async function show(request, response){

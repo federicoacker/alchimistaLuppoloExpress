@@ -14,8 +14,8 @@ export async function selectAllProducts(options){
     } = options || {};
     let whereString = `WHERE 1 `;
     let orderString = "";
-    let offsetString = "OFFSET 0";
-    let limitString = "LIMIT 10";
+    let offsetString = "";
+    let limitString = "";
     
     if(validatedSearch){
         whereString += `AND (p.name LIKE "%${validatedSearch}%" or p.description LIKE "%${validatedSearch}%") `;
@@ -77,7 +77,8 @@ export async function selectAllProducts(options){
         ON cp.category_id = c.id
     ${whereString}
     ${orderString}
-    ${limitString} ${offsetString};
+    ${limitString} ${offsetString}
+    ;
     `;
     try{
         const [products] = await connection.query(query);
