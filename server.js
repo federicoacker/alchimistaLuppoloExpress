@@ -18,7 +18,6 @@ app.use(express.json());
 
 app.post("/mail", async (request, response) => {
     const resultObject = await sendMail(request.body);
-    console.log(resultObject);
     const {result, error} = await resultObject;
     if(error){
         return response.status(500).json({

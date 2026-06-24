@@ -175,7 +175,7 @@ function isValidPrice(value) {
         return false;
     }
 
-    if (parsedValue < 0 || parsedValue > dataTypes.DECIMAL) {
+    if (parsedValue < 0 || parsedValue > dataTypes.TOTAL_PRICE) {
         return false;
     }
 

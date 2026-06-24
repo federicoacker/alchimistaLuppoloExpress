@@ -80,12 +80,13 @@ export async function selectAllProducts(options){
     ${limitString} ${offsetString}
     ;
     `;
+    console.log(query);
     try{
         const [products] = await connection.query(query);
         if(products.length === 0){
             return {error:404, result:null};
         }
-        const incorporatedProducts = incorporateProducts(products);
+        const incorporatedProducts = incorporateProducts(products, validatedOrderBy);
         return {error:null, result:incorporatedProducts};
     }
     catch(error){

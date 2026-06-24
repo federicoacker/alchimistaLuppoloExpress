@@ -1,45 +1,36 @@
 import { mapProducts } from "./mapProducts.js";
 import { reduceCategoriesForProducts } from "./reduceCategoriesForProducts.js";
 
-export function incorporateProducts(products) {
+export function incorporateProducts(products, sortingMethod) {
     let equalProducts = [];
     let groupedProducts = [];
     let lastSlug;
-    products.sort((a,b) => {
-        const slugA = a.slug.toUpperCase();
-        const slugB = b.slug.toUpperCase();
-        if(slugA < slugB){
-            return -1;
-        }
-        if(slugA > slugB){
-            return 1;
-        }
-        return 0;
-    });
+    let saw = Array(products.length).fill(0);
+
+    let groupedArray = [];
+    let biggerArray = [];
+
+    for (let i = 0; i < saw.length; i++) {
+        saw[i] = false;
+    }
+
     for (let i = 0; i < products.length; i++) {
-        const currentProduct = products[i];
-        if (i === 0) {
-            lastSlug = currentProduct.slug;
-            equalProducts.push(currentProduct);
-        }
-        else {
-            if (currentProduct.slug === lastSlug) {
-                equalProducts.push(currentProduct);
+
+        if (!saw[i]) {
+            let groupedArray = [products[i]];
+
+            for (let j = i + 1; j < products.length; j++) {
+                if (products[i].slug === products[j].slug) {
+                    groupedArray.push(products[i]);
+                    saw[j] = true;
+                }
             }
-            else {
-                const reducedProduct = reduceCategoriesForProducts(equalProducts);
-                groupedProducts.push(reducedProduct);
-                lastSlug = currentProduct.slug;
-                equalProducts = [currentProduct];
-            }
+            const reducedProduct = reduceCategoriesForProducts(groupedArray);
+            biggerArray.push(reducedProduct);
         }
     }
-    if (equalProducts.length !== 0) {
-        const reducedProduct = reduceCategoriesForProducts(equalProducts);
-        groupedProducts.push(reducedProduct);
-    }
-    
-    const mappedProducts = mapProducts(groupedProducts);
+
+    const mappedProducts = mapProducts(biggerArray);
 
     return mappedProducts;
 }
