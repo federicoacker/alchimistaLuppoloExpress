@@ -156,7 +156,7 @@ function switchValidator(key, orderPayload) {
     }
 }
 
-function isValidEmail(value) {
+export function isValidEmail(value) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
