@@ -1,4 +1,5 @@
 import connection from "../db.js";
+import sendMail from "../../utils/sendMail.js";
 import { validateOrderPayload } from "../../utils/validation/validateOrderPayload.js";
 
 export async function createOrder(orderPayload) {
@@ -104,6 +105,7 @@ export async function createOrder(orderPayload) {
             await connection.execute(createOrderProductQuery, createOrderProductParams);
         }
         await connection.commit();
+        await sendMail({orderId, email, products});
         return {
             error: null,
             result: orderId
