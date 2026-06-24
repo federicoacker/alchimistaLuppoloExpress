@@ -18,10 +18,11 @@ async function createPaymentIntent(request, response, next) {
         let amount = 0;
 
         for (const item of cartItems) {
-            const { product_id, quantity } = item;
+            const { slug, quantity } = item;
+
 
             //Controllo che prodotto e quantità siano validi
-            if (!product_id || !quantity || quantity <= 0) {
+            if (!slug || !quantity || quantity <= 0) {
                 return response.status(400).json({
                     message: "Prodotto o quantità non validi",
                 });
@@ -29,14 +30,14 @@ async function createPaymentIntent(request, response, next) {
 
             //Recupero il prezzo dal database, non dal frontend
             const [products] = await connection.query(
-                "SELECT id, price FROM products WHERE id = ?",
-                [product_id]
+                "SELECT id, price FROM products WHERE slug = ?",
+                [slug]
             );
 
             //Se il prodotto non esiste, blocco il pagamento
             if (products.length === 0) {
                 return response.status(404).json({
-                    message: `Prodotto con id ${product_id} non trovato`,
+                    message: `Prodotto con slug ${slug} non trovato`,
                 });
             }
 
