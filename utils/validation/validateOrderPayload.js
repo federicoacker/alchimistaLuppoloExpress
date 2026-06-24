@@ -112,7 +112,7 @@ function switchValidator(key, orderPayload) {
 
         case "total_price":
             result = validateFloatNumber(orderPayload[key]);
-            if(result === null || result !== (orderPayload["shipping_price"] + orderPayload["products_price"])){ 
+            if(result === null || result !== (orderPayload["shipping_price"] + orderPayload["products_price"]) || result > dataTypes.TOTAL_PRICE){ 
                 return "Il total price inserito non è valido"
             };
             break;

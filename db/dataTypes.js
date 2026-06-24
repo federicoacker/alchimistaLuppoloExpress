@@ -21,7 +21,8 @@ const dataTypes = {
         "pending",
         "canceled"
     ],
-    DECIMAL: 99.99
+    DECIMAL: 99.99,
+    TOTAL_PRICE:99999999.99
 }
 
 export default dataTypes;
