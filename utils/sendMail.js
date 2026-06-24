@@ -8,7 +8,7 @@ async function sendMail(emailPayload){
     let isNewsLetter = false;
     const transporter = await getTransporter();
     if(!isValidEmail(emailPayload.email)){
-        return "Email inserita non valida";
+        return {error:"Email inserita non valida", result:null};
     }
     if(!emailPayload.orderId){
         isNewsLetter = true;
