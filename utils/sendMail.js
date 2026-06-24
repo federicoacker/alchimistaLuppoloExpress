@@ -143,6 +143,7 @@ async function sendMail(emailPayload) {
             subject: "Thank you!",
             html: emailResponse
         });
+        return {error: null, result: "Tutto Okay"};
     }
     catch (error) {
         console.error("Errore nel mandare la email: ", error)
