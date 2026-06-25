@@ -43,7 +43,7 @@ export async function validateProductQuery(queryObject){
     let validatedOrderBy;
     let validatedOrder;
     let validatedOffset;
-    let validatedCategory;
+    let validatedCategory = [];
     let validatedSearch;
     let validatedLimit;
     let validatedBrewery;
@@ -70,13 +70,21 @@ export async function validateProductQuery(queryObject){
                 }
                 break;
             case "category":
-                validatedCategory = validateString(queryObject["category"].toLowerCase());
-                if(validatedCategory === "any"){
-                    validatedCategory = undefined;
+                const receivedCategories = queryObject["category"].split(",")
+                let firstCategory = receivedCategories[0];
+                if(firstCategory === "any"){
                     break;
                 }
-                if(!validatedCategory || !acceptedCategories.includes(validatedCategory)){
-                    errors.push("Il valore inserito in category è errato");
+                for(let i = 0; i<receivedCategories.length && firstCategory !== "any"; i++){
+                    const current = receivedCategories[i];
+                    let validatedCurrent = validateString(current.toLowerCase());
+                    if(!validatedCurrent || !acceptedCategories.includes(validatedCurrent)){
+                        errors.push("Il valore inserito per category non è valido");
+                        break;
+                    }
+                    else{
+                        validatedCategory.push(validatedCurrent);
+                    }
                 }
                 break;
             case "search":

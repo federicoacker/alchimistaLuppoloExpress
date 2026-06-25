@@ -26,7 +26,7 @@ app.post("/mail", async (request, response) => {
         });
     }
     return response.json({
-        result:result,
+        result:"Tutto Okay",
         error:null
     })
 })
