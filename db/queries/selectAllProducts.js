@@ -20,7 +20,6 @@ export async function selectAllProducts(options){
     if(validatedSearch){
         whereString += `AND (p.name LIKE "%${validatedSearch}%" or p.description LIKE "%${validatedSearch}%") `;
     }
-    console.log(validatedCategory);
     if(validatedCategory.length !== 0){
         whereString += `AND (c.slug = "${validatedCategory[0]}" `
         if(validatedCategory.length === 1){
@@ -54,7 +53,6 @@ export async function selectAllProducts(options){
     if(validatedLimit){
         limitString = `LIMIT ${validatedLimit}`;
     }
-    console.log("Made it past the checks");
 
 
     const query=`
@@ -90,7 +88,7 @@ export async function selectAllProducts(options){
     ${limitString} ${offsetString}
     ;
     `;
-    console.log(query);
+
     try{
         const [products] = await connection.query(query);
         if(products.length === 0){
