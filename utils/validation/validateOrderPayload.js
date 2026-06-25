@@ -112,7 +112,7 @@ function switchValidator(key, orderPayload) {
 
         case "total_price":
             result = validateFloatNumber(orderPayload[key]);
-            if(result === null || result !== (orderPayload["shipping_price"] + orderPayload["products_price"])){ 
+            if(result === null || result !== (orderPayload["shipping_price"] + orderPayload["products_price"]) || result > dataTypes.TOTAL_PRICE){ 
                 return "Il total price inserito non è valido"
             };
             break;
@@ -156,7 +156,7 @@ function switchValidator(key, orderPayload) {
     }
 }
 
-function isValidEmail(value) {
+export function isValidEmail(value) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
@@ -175,7 +175,7 @@ function isValidPrice(value) {
         return false;
     }
 
-    if (parsedValue < 0 || parsedValue > dataTypes.DECIMAL) {
+    if (parsedValue < 0 || parsedValue > dataTypes.TOTAL_PRICE) {
         return false;
     }
 
