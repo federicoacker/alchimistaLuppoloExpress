@@ -4,8 +4,11 @@ import productController from "../controllers/products.js";
 import { checkProductSlugExists } from "../middlewares/checkProductSlugExists.js";
 import { validateProductRequestPayload } from "../middlewares/validateProductRequestPayload.js";
 import { validatedProductQueryRequest } from "../middlewares/validatedProductQueryRequest.js";
+import connection from "../db/db.js";
 
 const productRouter = express.Router();
+
+productRouter.get("/count", [validatedProductQueryRequest, productController.count])
 
 productRouter.get("/", [validatedProductQueryRequest, productController.index]);
 

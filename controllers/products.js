@@ -1,3 +1,4 @@
+import { countProducts } from "../db/queries/countProducts.js";
 import { createProduct } from "../db/queries/createProduct.js";
 import { destroyProduct } from "../db/queries/destroyProduct.js";
 import { modifyProduct } from "../db/queries/modifyProduct.js";
@@ -9,7 +10,8 @@ const productController = {
     show,
     store,
     modify,
-    destroy
+    destroy,
+    count
 }
 
 async function index(request, response) {
@@ -90,6 +92,27 @@ async function destroy(request, response) {
         });
     }
     return response.sendStatus(204);
+}
+
+async function count(request, response) {
+    const {error, result: count} = await countProducts(request.validatedQuery);
+    switch(error){
+        case 404:
+            return response.status(404).json({
+                result:0,
+                error:"Non sono stati trovati prodotti che soddisfino questa query"
+            })
+            break;
+        case 500:
+            return response.status(500).json({
+                result:null,
+                error:"C'è stato un errore nel fetch del count dei prodotti"
+            })
+    }
+    return response.json({
+        error:null,
+        result:count
+    })
 }
 
 export default productController;

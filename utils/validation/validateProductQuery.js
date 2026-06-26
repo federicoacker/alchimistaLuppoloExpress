@@ -1,23 +1,38 @@
 import { getProductCount } from "../../db/queries/getProductCount.js";
 import { selectAllCategories } from "../../db/queries/selectAllCategories.js";
-import {validateString} from "./validateString.js";
+import { validateString } from "./validateString.js";
 import { validateNumber } from "./validateNumber.js";
 import dataTypes from "../../db/dataTypes.js";
 
 
-export async function validateProductQuery(queryObject){
+export async function validateProductQuery(queryObject) {
+
+    if (Object.keys(queryObject).length === 0) {
+        const validatedQueryObject = {
+            validatedOrderBy: undefined,
+            validatedOrder: undefined,
+            validatedOffset: undefined,
+            validatedLimit: undefined,
+            validatedCategory: [],
+            validatedSearch: undefined,
+            validatedBrewery: undefined,
+            validatedExcludedBrewery: undefined
+        }
+        return { result: validatedQueryObject, errors: [] };
+    }
+
     let errors = [];
     const keys = Object.getOwnPropertyNames(queryObject);
-    if(keys.length === 0){
-        return{result:{}, errors:[]};
+    if (keys.length === 0) {
+        return { result: {}, errors: [] };
     }
 
     const acceptedOrderBys = [
-        "created_at", 
-        "updated_at", 
-        "name", 
-        "category_slug", 
-        "origin", 
+        "created_at",
+        "updated_at",
+        "name",
+        "category_slug",
+        "origin",
         "brewery",
         "price",
         "ibu",
@@ -26,15 +41,15 @@ export async function validateProductQuery(queryObject){
     ]
     const acceptedOrders = ["asc", "desc"];
 
-    const {result : categoryList, error: categoryError} = await selectAllCategories();
-    if(categoryError){
+    const { result: categoryList, error: categoryError } = await selectAllCategories();
+    if (categoryError) {
         errors.push("C'è stato un problema nel fetch delle categorie");
     }
-    const {result : count, error: countError} = await getProductCount();
-    if(countError === 404){
+    const { result: count, error: countError } = await getProductCount();
+    if (countError === 404) {
         errors.push("Non ci sono prodotti in db");
     }
-    if(countError === 500){
+    if (countError === 500) {
         errors.push("C'è stato un problema nel fetch del numero di prodotti");
     }
 
@@ -49,69 +64,72 @@ export async function validateProductQuery(queryObject){
     let validatedBrewery;
     let validatedExcludedBrewery;
 
-    for(const key of keys){
-        switch(key){
+    for (const key of keys) {
+        switch (key) {
             case "orderBy":
                 validatedOrderBy = validateString(queryObject["orderBy"]);
-                if(!validatedOrderBy || !acceptedOrderBys.includes(validatedOrderBy.toLowerCase())){
+                if (!validatedOrderBy || !acceptedOrderBys.includes(validatedOrderBy.toLowerCase())) {
                     errors.push("Il valore inserito in orderBy è errato");
                 }
                 break;
             case "order":
                 validatedOrder = validateString(queryObject["order"]);
-                if(!validatedOrder || !acceptedOrders.includes(validatedOrder.toLowerCase())){
+                if (!validatedOrder || !acceptedOrders.includes(validatedOrder.toLowerCase())) {
                     errors.push("Il valore inserito in order non è valido");
                 }
                 break;
             case "offset":
                 validatedOffset = validateNumber(queryObject["offset"]);
-                if(validatedOffset === null || validatedOffset > count || validatedOffset < 0){
+                if (validatedOffset === null || validatedOffset > count || validatedOffset < 0) {
                     errors.push("Il valore inserito per l'offset non è valido");
                 }
                 break;
             case "category":
                 const receivedCategories = queryObject["category"].split(",")
-                let firstCategory = receivedCategories[0];
-                if(firstCategory === "any"){
+                if (!receivedCategories) {
                     break;
                 }
-                for(let i = 0; i<receivedCategories.length && firstCategory !== "any"; i++){
+                let firstCategory = receivedCategories[0];
+                if (firstCategory === "any") {
+                    break;
+                }
+                for (let i = 0; i < receivedCategories.length && firstCategory !== "any"; i++) {
                     const current = receivedCategories[i];
                     let validatedCurrent = validateString(current.toLowerCase());
-                    if(!validatedCurrent || !acceptedCategories.includes(validatedCurrent)){
+                    if (!validatedCurrent || !acceptedCategories.includes(validatedCurrent)) {
                         errors.push("Il valore inserito per category non è valido");
                         break;
                     }
-                    else{
+                    else {
                         validatedCategory.push(validatedCurrent);
                     }
                 }
                 break;
             case "search":
-                if(queryObject["search"].length === 0){
+                if (queryObject["search"].length === 0) {
                     validatedSearch = undefined;
                     break;
                 }
                 validatedSearch = validateString(queryObject["search"].toLowerCase());
-                if(!validatedSearch){
+                if (!validatedSearch) {
                     errors.push("Il valore inserito in search è errato");
                 }
                 break;
             case "limit":
                 validatedLimit = validateNumber(queryObject["limit"]);
-                if(validatedLimit === null || validatedLimit > 10 || validatedLimit < 0){
+                if (validatedLimit === null || validatedLimit > 10 || validatedLimit < 0) {
                     errors.push("Il valore inserito in limit non è valido");
                 }
                 break;
             case "brewery":
                 validatedBrewery = validateString(queryObject["brewery"].toLowerCase());
-                if(!validatedBrewery || validatedBrewery.length > dataTypes.VARCHAR_255 ){
+                if (!validatedBrewery || validatedBrewery.length > dataTypes.VARCHAR_255) {
                     errors.push("Il valore inserito per brewery non è valido");
                 }
                 break;
             case "excluded-brewery":
                 validatedExcludedBrewery = validateString(queryObject["excluded-brewery"].toLowerCase());
-                if(!validatedExcludedBrewery || validatedExcludedBrewery.length > dataTypes.VARCHAR_255){
+                if (!validatedExcludedBrewery || validatedExcludedBrewery.length > dataTypes.VARCHAR_255) {
                     errors.push("Il valore inserito per la brewery da escludere non è valido");
                 }
                 break;
@@ -132,9 +150,9 @@ export async function validateProductQuery(queryObject){
         validatedExcludedBrewery
     }
 
-    if(errors.length > 0){
-        return {result:{}, errors};
+    if (errors.length > 0) {
+        return { result: {}, errors };
     }
-    
-    return {result:validatedQueryObject, errors: []};
+
+    return { result: validatedQueryObject, errors: [] };
 }

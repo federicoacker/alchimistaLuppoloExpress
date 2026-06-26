@@ -1,7 +1,7 @@
 import { incorporateProducts } from "../../utils/mapping/incorporateProducts.js";
 import connection from "../db.js";
 
-export async function selectAllProducts(options){
+export async function selectAllProducts(options, noLimit = false, noOffset = false, isCount = false){
     const {
         validatedOrderBy,
         validatedOrder,
@@ -47,10 +47,10 @@ export async function selectAllProducts(options){
             orderString += ` asc`;
         }
     }
-    if(validatedOffset){
+    if(validatedOffset && !noOffset){
         offsetString = `OFFSET ${validatedOffset}`;
     }
-    if(validatedLimit){
+    if(validatedLimit && !noLimit){
         limitString = `LIMIT ${validatedLimit}`;
     }
 
@@ -85,16 +85,16 @@ export async function selectAllProducts(options){
         ON cp.category_id = c.id
     ${whereString}
     ${orderString}
-    ${limitString} ${offsetString}
     ;
     `;
+
 
     try{
         const [products] = await connection.query(query);
         if(products.length === 0){
             return {error:404, result:null};
         }
-        const incorporatedProducts = incorporateProducts(products, validatedOrderBy);
+        const incorporatedProducts = incorporateProducts(products, validatedLimit, validatedOffset, isCount);
         return {error:null, result:incorporatedProducts};
     }
     catch(error){
