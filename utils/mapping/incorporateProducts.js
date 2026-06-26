@@ -1,10 +1,8 @@
 import { mapProducts } from "./mapProducts.js";
 import { reduceCategoriesForProducts } from "./reduceCategoriesForProducts.js";
 
-export function incorporateProducts(products, sortingMethod) {
-    let equalProducts = [];
-    let groupedProducts = [];
-    let lastSlug;
+export function incorporateProducts(products) {
+
     let saw = Array(products.length).fill(0);
 
     let groupedArray = [];
