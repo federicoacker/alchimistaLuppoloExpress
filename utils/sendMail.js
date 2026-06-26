@@ -9,7 +9,6 @@ async function sendMail(emailPayload) {
     let isNewsLetter = false;
 
     const transporter = await getTransporter();
-    console.log(transporter);
 
     if (!isValidEmail(emailPayload.email)) {
         return { error: "Email inserita non valida", result: null };
@@ -271,8 +270,6 @@ async function sendMail(emailPayload) {
             subject: "Thank you!",
             html: emailResponse
         });
-
-        console.log(info);
 
         return { error: null, result: "Tutto Okay" };
     } catch (error) {
