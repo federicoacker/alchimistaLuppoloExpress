@@ -45,8 +45,8 @@ async function sendMail(emailPayload) {
         for (const product of emailPayload.products) {
             customerProductTable += `
             <tr>
-                <td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.08);">
-                    ${product.product_slug.replaceAll("-", " ")}
+                <td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); text-transform:capitalize;">
+                    ${product.name}
                 </td>
                 <td style="padding: 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08);">
                     ${product.quantity}

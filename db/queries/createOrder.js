@@ -69,7 +69,7 @@ export async function createOrder(orderPayload) {
 
         for (const product of products) {
             const selectProductQuery = `
-                SELECT id, price
+                SELECT id, price, name
                 FROM products
                 WHERE slug = ?
             `;
@@ -89,6 +89,7 @@ export async function createOrder(orderPayload) {
 
             productsWithPrice.push({
                 ...product,
+                name:selectedProduct.name,
                 product_price: selectedProduct.price
             });
 
