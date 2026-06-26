@@ -9,7 +9,7 @@ export async function validatedProductQueryRequest(request, response, next){
             errors
         })
     }
-    console.log(validatedQuery);
+
     request.validatedQuery = validatedQuery;
     next();
 }

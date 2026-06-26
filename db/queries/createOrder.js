@@ -127,7 +127,6 @@ export async function createOrder(orderPayload) {
         };
     }
     catch (error) {
-        console.log(error);
 
         await connection.rollback();
 
