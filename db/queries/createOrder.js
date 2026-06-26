@@ -65,6 +65,8 @@ export async function createOrder(orderPayload) {
 
         const orderId = orderResult.insertId;
 
+        const productsWithPrice = [];
+
         for (const product of products) {
             const selectProductQuery = `
                 SELECT id, price
@@ -85,6 +87,11 @@ export async function createOrder(orderPayload) {
 
             const selectedProduct = productResult[0];
 
+            productsWithPrice.push({
+                ...product,
+                product_price: selectedProduct.price
+            });
+
             const createOrderProductQuery = `
                 INSERT INTO order_product (
                     product_id,
@@ -104,8 +111,15 @@ export async function createOrder(orderPayload) {
 
             await connection.execute(createOrderProductQuery, createOrderProductParams);
         }
+
         await connection.commit();
-        await sendMail({orderId, email, products});
+
+        await sendMail({
+            orderId,
+            email,
+            products: productsWithPrice
+        });
+
         return {
             error: null,
             result: orderId
@@ -113,7 +127,9 @@ export async function createOrder(orderPayload) {
     }
     catch (error) {
         console.log(error);
+
         await connection.rollback();
+
         return {
             error: 500,
             result: null
