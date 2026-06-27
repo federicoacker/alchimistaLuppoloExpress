@@ -1,7 +1,7 @@
 import { mapProducts } from "./mapProducts.js";
 import { reduceCategoriesForProducts } from "./reduceCategoriesForProducts.js";
 
-export function incorporateProducts(products, limit, offset, isCount = false) {
+export function incorporateProducts(products, limit = 1, offset = 0, isCount = false) {
 
     let saw = Array(products.length).fill(0);
 
