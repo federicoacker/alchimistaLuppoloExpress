@@ -3,10 +3,11 @@ import { reduceCategoriesForProducts } from "./reduceCategoriesForProducts.js";
 
 export function incorporateProducts(products, limit = 1, offset = 0, isCount = false) {
 
-    let saw = Array(products.length).fill(0);
-
+    let saw = Array(products.length);
     let groupedArray = [];
     let biggerArray = [];
+    console.log(products.length);
+
 
     for (let i = 0; i < saw.length; i++) {
         saw[i] = false;
@@ -16,20 +17,24 @@ export function incorporateProducts(products, limit = 1, offset = 0, isCount = f
 
         if (!saw[i]) {
             let groupedArray = [products[i]];
+            
 
             for (let j = i + 1; j < products.length; j++) {
                 if (products[i].slug === products[j].slug) {
-                    groupedArray.push(products[i]);
+                    groupedArray.push(products[j]);
                     saw[j] = true;
                 }
             }
+            
             const reducedProduct = reduceCategoriesForProducts(groupedArray);
             biggerArray.push(reducedProduct);
         }
-    }
+    }  
 
+    
     const mappedProducts = mapProducts(biggerArray);
     let slicedProducts = mappedProducts;
+    
     if (!isCount && limit !== 1) {
         slicedProducts = mappedProducts.slice(offset, offset + limit);
     }

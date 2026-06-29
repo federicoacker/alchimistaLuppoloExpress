@@ -1,7 +1,8 @@
 import { incorporateProducts } from "../../utils/mapping/incorporateProducts.js";
 import connection from "../db.js";
+import MyError from "../../utils/errors/MyError.js";
 
-export async function selectAllProducts(options = {}, noLimit = false, noOffset = false, isCount = false){
+export async function selectAllProducts(options = {}, noLimit = false, noOffset = false, isCount = false) {
     const {
         validatedOrderBy,
         validatedOrder,
@@ -16,46 +17,58 @@ export async function selectAllProducts(options = {}, noLimit = false, noOffset 
     let orderString = "";
     let offsetString = "";
     let limitString = "";
-    
-    if(validatedSearch){
+
+    if (validatedSearch) {
         whereString += `AND (p.name LIKE "%${validatedSearch}%" or p.description LIKE "%${validatedSearch}%") `;
     }
-    if(validatedCategory && validatedCategory.length !== 0){
+    if (validatedCategory && validatedCategory.length !== 0) {
         whereString += `AND (c.slug = "${validatedCategory[0]}" `
-        if(validatedCategory.length === 1){
+        if (validatedCategory.length === 1) {
             whereString += ")";
         }
         else if (validatedCategory.length > 1) {
-            for(let i = 1; i<validatedCategory.length; i++){
-                whereString +=`OR c.slug = "${validatedCategory[i]}" `
+            for (let i = 1; i < validatedCategory.length; i++) {
+                whereString += `OR c.slug = "${validatedCategory[i]}" `
             }
             whereString += ")";
         }
+        console.log(whereString);
     }
-    if(validatedBrewery){
+    if (validatedBrewery) {
         whereString += `AND p.brewery = "${validatedBrewery}" `;
     }
-    if(validatedExcludedBrewery){
+    if (validatedExcludedBrewery) {
         whereString += `AND NOT p.brewery = "${validatedExcludedBrewery}" `;
     }
-    if(validatedOrderBy){
+    if (validatedOrderBy) {
         orderString = `ORDER BY ${validatedOrderBy}`
-        if(validatedOrder){
+        if (validatedOrder) {
             orderString += ` ${validatedOrder}`;
         }
         else {
             orderString += ` asc`;
         }
     }
-    if(validatedOffset && !noOffset){
+    if (validatedOffset && !noOffset) {
         offsetString = `OFFSET ${validatedOffset}`;
     }
-    if(validatedLimit && !noLimit){
+    if (validatedLimit && !noLimit) {
         limitString = `LIMIT ${validatedLimit}`;
     }
 
+    const firstQuery = `
+    SELECT p.id as id
+    from products as p
+    JOIN category_product as cp
+    on p.id = cp.product_id
+    JOIN categories c
+    on c.id = cp.category_id
+    ${whereString}
+    
+    `
 
-    const query=`
+    try {
+        const query = `
     SELECT 
         p.slug,
         p.name, 
@@ -83,20 +96,29 @@ export async function selectAllProducts(options = {}, noLimit = false, noOffset 
         ON cp.product_id = p.id
     JOIN categories as c 
         ON cp.category_id = c.id
-    ${whereString}
+    JOIN (
+        SELECT p.id as id
+        from products as p
+        JOIN category_product as cp
+        on p.id = cp.product_id
+        JOIN categories as c
+        on c.id = cp.category_id
+        ${whereString}
+    ) as tmp_products
+        ON tmp_products.id = p.id
     ${orderString}
     ;
     `;
 
-    try{
         const [products] = await connection.query(query);
-        if(products.length === 0){
-            return {error:404, result:null};
+        if (products.length === 0) {
+            return { error: 404, result: null };
         }
         const incorporatedProducts = incorporateProducts(products, validatedLimit, validatedOffset, isCount);
-        return {error:null, result:incorporatedProducts};
+        return { error: null, result: incorporatedProducts };
     }
-    catch(error){
-        return {error:500, result: null};
+    catch (error) {
+        throw new MyError({code:500, message:"Errore"})
     }
 }
+
