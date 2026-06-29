@@ -4,6 +4,7 @@ import cors from 'cors';
 // Importazione middlewares
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import validatePromptRequest from './middlewares/validatePromptRequest.js';
 
 // Importazione dei router
 import categoryRouter from './routers/categories.js';
@@ -11,6 +12,9 @@ import ordersRouter from './routers/orders.js';
 import productRouter from './routers/products.js';
 import paymentsRouter from "./routers/payments.js";
 import sendMail from './utils/sendMail.js';
+
+//Importazione agente
+import callLuppolino from './utils/agent.js';
 
 
 const app = express();
@@ -35,6 +39,20 @@ app.post("/mail", async (request, response) => {
         error:null
     })
 })
+
+app.post("/agent", [validatePromptRequest,  async (request, response) => {
+    const answer = await callLuppolino(request.requestPrompt);
+    if(!answer){
+        return response.status(500).json({
+            error: "C'è stato un errore interno del server",
+            result: null
+        });
+    }
+    return response.json({
+        error:null,
+        result:answer
+    })
+}])
 
 app.use('/orders', ordersRouter);
 
