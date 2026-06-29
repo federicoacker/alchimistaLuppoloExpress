@@ -1,12 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 
+// Importazione middlewares
+import { notFound } from './middlewares/notFound.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+
 // Importazione dei router
 import categoryRouter from './routers/categories.js';
 import ordersRouter from './routers/orders.js';
 import productRouter from './routers/products.js';
 import paymentsRouter from "./routers/payments.js";
 import sendMail from './utils/sendMail.js';
+
 
 const app = express();
 
@@ -38,6 +43,9 @@ app.use("/products", productRouter);
 app.use("/categories", categoryRouter)
 
 app.use("/payments", paymentsRouter);
+
+app.use(notFound);
+app.use(errorHandler);
 
 
 app.listen(port, error => {
