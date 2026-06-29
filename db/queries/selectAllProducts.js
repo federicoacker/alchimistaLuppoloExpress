@@ -1,7 +1,7 @@
 import { incorporateProducts } from "../../utils/mapping/incorporateProducts.js";
 import connection from "../db.js";
 
-export async function selectAllProducts(options, noLimit = false, noOffset = false, isCount = false){
+export async function selectAllProducts(options = {}, noLimit = false, noOffset = false, isCount = false){
     const {
         validatedOrderBy,
         validatedOrder,
@@ -11,7 +11,7 @@ export async function selectAllProducts(options, noLimit = false, noOffset = fal
         validatedSearch,
         validatedBrewery,
         validatedExcludedBrewery
-    } = options || {};
+    } = options;
     let whereString = `WHERE 1 `;
     let orderString = "";
     let offsetString = "";
@@ -20,7 +20,7 @@ export async function selectAllProducts(options, noLimit = false, noOffset = fal
     if(validatedSearch){
         whereString += `AND (p.name LIKE "%${validatedSearch}%" or p.description LIKE "%${validatedSearch}%") `;
     }
-    if(validatedCategory.length !== 0){
+    if(validatedCategory && validatedCategory.length !== 0){
         whereString += `AND (c.slug = "${validatedCategory[0]}" `
         if(validatedCategory.length === 1){
             whereString += ")";
@@ -87,7 +87,6 @@ export async function selectAllProducts(options, noLimit = false, noOffset = fal
     ${orderString}
     ;
     `;
-
 
     try{
         const [products] = await connection.query(query);
