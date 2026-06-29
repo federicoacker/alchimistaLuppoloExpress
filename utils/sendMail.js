@@ -242,16 +242,93 @@ async function sendMail(emailPayload) {
         `;
     } else {
         emailResponse = `
-        <section style="background: #17120f; position:relative; padding:32px; border:2px solid rgba(200,155,60,0.25); pointer-events:none; font-family: Arial, Helvetica, sans-serif;">
-            <h1 style="color: #f3ecd7; font-size: 28px; margin: 0 0 16px;">
-                Grazie per aver scelto "L'Alchimista Del Luppolo"
+    <div style="
+        margin: 0;
+        padding: 48px 32px;
+        background: linear-gradient(135deg, #17120f, #241b15, #17120f);
+        font-family: Arial, Helvetica, sans-serif;
+        color: #e9e3d5;
+    ">
+        <section style="
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 40px 36px;
+        ">
+            <p style="
+                margin: 0 0 12px;
+                color: #c89b3c;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                font-size: 13px;
+                font-weight: 700;
+            ">
+                Iscrizione confermata
+            </p>
+
+            <h1 style="
+                color: #f3ecd7;
+                font-size: 32px;
+                line-height: 1.25;
+                margin: 0 0 18px;
+                font-weight: 700;
+            ">
+                Benvenuto ne L'Alchimista del Luppolo
             </h1>
 
-            <p style="color: #e9e3d5;">
-                Grazie per esserti unito alla nostra newsletter. Riceverai aggiornamenti sulle ultime birre, e sugli ultimi processi innovativi di fermentazione!
+            <div style="
+                width: 120px;
+                height: 1px;
+                background: #c89b3c;
+                margin: 0 0 24px;
+            "></div>
+
+            <p style="
+                color: #e9e3d5;
+                font-size: 16px;
+                line-height: 1.7;
+                margin: 0 0 18px;
+            ">
+                Grazie per esserti unito alla nostra newsletter.
+                Da oggi riceverai aggiornamenti sulle nuove birre artigianali,
+                sulle formule brassicole e sulle novità de L'Alchimista del Luppolo.
+            </p>
+
+            <p style="
+                color: #b9ad98;
+                font-size: 15px;
+                line-height: 1.7;
+                margin: 0 0 28px;
+            ">
+                Ti terremo aggiornato sulle ultime creazioni, sugli abbinamenti consigliati
+                e sulle storie che accompagnano ogni nostra birra.
+            </p>
+
+            <a href="${process.env.FRONTEND_URL || "http://localhost:5173"}" style="
+                display: inline-block;
+                color: #c89b3c;
+                border: 1px solid #c89b3c;
+                padding: 12px 22px;
+                border-radius: 4px;
+                text-decoration: none;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                font-size: 13px;
+                font-weight: 700;
+            ">
+                Visita il sito
+            </a>
+
+            <p style="
+                color: #7f735f;
+                font-size: 12px;
+                line-height: 1.6;
+                margin: 32px 0 0;
+            ">
+                Hai ricevuto questa email perché ti sei iscritto alla newsletter de L'Alchimista del Luppolo.
             </p>
         </section>
-        `;
+    </div>
+    `;
     }
 
     try {
