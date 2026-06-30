@@ -6,7 +6,6 @@ export function incorporateProducts(products, limit = 1, offset = 0, isCount = f
     let saw = Array(products.length);
     let groupedArray = [];
     let biggerArray = [];
-    console.log(products.length);
 
 
     for (let i = 0; i < saw.length; i++) {
