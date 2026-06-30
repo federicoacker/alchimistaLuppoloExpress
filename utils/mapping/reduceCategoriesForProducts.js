@@ -8,10 +8,15 @@ export function reduceCategoriesForProducts(products){
                 }];
             }
             else{
-                accumulator.categories.push({
-                    name: currentProduct.category_name,
-                    slug: currentProduct.category_slug
-                });
+
+                const accumulatorCategories = accumulator.categories.map(category => category.name);
+
+                if(!accumulatorCategories.includes(currentProduct.category_name)){
+                    accumulator.categories.push({
+                        name: currentProduct.category_name,
+                        slug: currentProduct.category_slug
+                    });
+                }
             }
             return accumulator;
         }, {});
