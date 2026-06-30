@@ -33,7 +33,6 @@ async function callClaude(userMessage) {
     const productContext = await getProductContext();
     const finalSystemPrompt = `${BASE_SYSTEM_PROMPT} contesto prodotti attuale dal database: ${productContext}`;
 
-    console.log(finalSystemPrompt);
     const luppolino = createAgent({
         model,
         apiKey: process.env.CLAUDE_API_KEY,
@@ -62,7 +61,6 @@ async function callClaude(userMessage) {
 
 async function callLuppolino(requestPrompt){
     const prompt = requestPrompt;
-    console.log(prompt);
     const answer = await callClaude(prompt);
     return answer;
 }

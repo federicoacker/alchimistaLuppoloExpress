@@ -32,7 +32,6 @@ export async function selectAllProducts(options = {}, noLimit = false, noOffset 
             }
             whereString += ")";
         }
-        console.log(whereString);
     }
     if (validatedBrewery) {
         whereString += `AND p.brewery = "${validatedBrewery}" `;
