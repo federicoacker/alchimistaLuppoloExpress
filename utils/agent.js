@@ -25,7 +25,7 @@ async function getProductContext() {
         default: break;
     }
 
-    return result.map((product, index) => `${index + 1}. ${product.name} (€${product.price.toFixed(2).replace(".", ",")}) - slug: ${product.slug} - description: ${product.short_description} - colore: ${product.colour}`)
+    return result.map((product, index) => `${index + 1}. ${product.name} (€${product.price.toFixed(2).replace(".", ",")}) - slug: ${product.slug} - description: ${product.short_description} - colore: ${product.colour} - abbinamento: ${product.pairs_with}`)
         .join("\n");
 }
 
