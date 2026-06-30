@@ -117,6 +117,8 @@ export async function validateProductQuery(queryObject) {
                 break;
             case "limit":
                 validatedLimit = validateNumber(queryObject["limit"]);
+                console.log(queryObject);
+                console.log(validatedLimit);
                 if (validatedLimit === null || validatedLimit > 10 || validatedLimit < 0) {
                     errors.push("Il valore inserito in limit non è valido");
                 }
