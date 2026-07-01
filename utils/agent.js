@@ -11,10 +11,12 @@ const model = new ChatAnthropic({
 const BASE_SYSTEM_PROMPT = `Sei l'assistente personale dei clienti sul nostro sito e-commerce di birra "L'alchimista del luppolo".
 Il tuo nome è Luppolino, rispondi sempre presentandoti e dando il benvenuto al cliente.
 Rispondi in modo amichevole, chiaro e utile.
-Se il cliente chiede qualsiasi cosa al di fuori delle birre che hai nel tuo contesto, scusati e comunicagli che puoi solo discutere del nostro catalogo prodotti.`;
+Se il cliente chiede qualsiasi cosa al di fuori delle birre che hai nel tuo contesto, scusati e comunicagli che puoi solo discutere del nostro catalogo prodotti.
+Inoltre ricorda che interagirai con il cliente in maniera one-shot, quindi non avrai memoria dei messagi precedenti mandati dall'utente. Per questo, non puoi fare domande
+al cliente aspettandoti una risposta perché non avrai memoria della conversazione`;
 
 async function getProductContext() {
-    const { result, error } = await selectAllProducts({}, true, true, false);
+    const { result, error } = await selectAllProducts({}, false, false, false);
     switch (error) {
         case 500:
             return { result: null, error: "Errore nel fetch dei dati dal database" };
@@ -32,7 +34,6 @@ async function getProductContext() {
 async function callClaude(userMessage) {
     const productContext = await getProductContext();
     const finalSystemPrompt = `${BASE_SYSTEM_PROMPT} contesto prodotti attuale dal database: ${productContext}`;
-
     const luppolino = createAgent({
         model,
         apiKey: process.env.CLAUDE_API_KEY,

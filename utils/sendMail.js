@@ -28,7 +28,7 @@ async function sendMail(emailPayload) {
         const order = await selectOrderById(orderId);
 
         let customerProductTable = `
-        <table style="color: #e9e3d5; width: 100%; max-width: 600px; border-collapse: collapse; margin-top: 1rem;">
+            <table style="color: #e9e3d5; width: 100%; max-width: 600px; border-collapse: collapse; margin: 1rem 0 48px 0;">
             <tr>
                 <th style="text-align: left; padding: 10px; border-bottom: 1px solid rgba(200,155,60,0.35); color: #bfa56a;">
                     Prodotto
@@ -141,6 +141,12 @@ async function sendMail(emailPayload) {
             </table>
 
             <h2 style="color: #f3ecd7; font-size: 20px; margin: 0 0 16px;">
+                Prodotti ordinati
+            </h2>
+
+            ${customerProductTable}
+
+            <h2 style="color: #f3ecd7; font-size: 20px; margin: 0 0 16px;">
                 Riepilogo ordine
             </h2>
 
@@ -172,13 +178,6 @@ async function sendMail(emailPayload) {
                     </td>
                 </tr>
             </table>
-
-            <h2 style="color: #f3ecd7; font-size: 20px; margin: 0 0 16px;">
-                Prodotti ordinati
-            </h2>
-
-            ${customerProductTable}
-
         </section>
         `;
 
@@ -192,6 +191,12 @@ async function sendMail(emailPayload) {
             <p style="color: #e9e3d5; margin: 0 0 32px;">
                 Grazie per aver comprato da noi, ecco qui il riepilogo del tuo ordine.
             </p>
+
+                <h2 style="color: #f3ecd7; font-size: 20px; margin: 0 0 16px;">
+                    Prodotti acquistati
+                </h2>
+
+                ${customerProductTable}
 
             <div>
                 <h2 style="color: #f3ecd7; font-size: 20px; margin: 0 0 16px;">
@@ -226,12 +231,6 @@ async function sendMail(emailPayload) {
                         </td>
                     </tr>
                 </table>
-
-                <h2 style="color: #f3ecd7; font-size: 20px; margin: 0 0 16px;">
-                    Prodotti acquistati
-                </h2>
-
-                ${customerProductTable}
             </div>
 
             <p style="color: #f3ecd7; margin-top: 32px;"> 

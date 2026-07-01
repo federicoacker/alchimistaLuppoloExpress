@@ -1,7 +1,7 @@
 import { mapProducts } from "./mapProducts.js";
 import { reduceCategoriesForProducts } from "./reduceCategoriesForProducts.js";
 
-export function incorporateProducts(products, limit = 1, offset = 0, isCount = false) {
+export function incorporateProducts(products, limit = 999, offset = 0, isCount = false) {
 
     let saw = Array(products.length);
     let groupedArray = [];
@@ -34,7 +34,7 @@ export function incorporateProducts(products, limit = 1, offset = 0, isCount = f
     const mappedProducts = mapProducts(biggerArray);
     let slicedProducts = mappedProducts;
     
-    if (!isCount && limit !== 1) {
+    if (!isCount && limit !== 0) {
         slicedProducts = mappedProducts.slice(offset, offset + limit);
     }
 
